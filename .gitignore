@@ -1,1 +1,4 @@
 build/bin/wpm
+build/bin/wpm.o
+build/bin/main.o
+build/bin/version.o
