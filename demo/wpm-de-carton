@@ -1,16 +1,54 @@
 #!/bin/bash
 echo "Wah Package-Manager de cartón"
 
-source /home/reisy/Panwah/wpm/demo/wpm.conf
+if [ -f /etc/wpm.conf ]; then
+	source /etc/wpm.conf
+	else
+	if [ -f $HOME/.config/wpm.conf ]; then
+		source $HOME/.config/wpm.conf
+	else
+		echo "Error: no se encontro la configuración"
+		exit 1
+	fi
+fi
+
+deps=("")
 
 if [ -f "$dbdir/$reponame.db" ]; then
-	pkgs=($(zcat "$dbdir/$reponame.db" | grep PKG: -A1 | cut -f2 -d ':' | grep -v \\--))
+	pkgs=($(zcat "$dbdir/$reponame.db" | grep PKG: -A1 | cut -f3 -d ':' | grep -v \\--))
 else
 	pkgs=()
 fi
 
 inspkgs=($(basename -a $pkgsdir/*))
 findpkg=false
+
+if [ "$1" = "update" ]; then
+	update=false
+	for pkg in "${inspkgs[@]}"; do
+		source $pkgsdir/$pkg
+		newver=$(zcat $dbdir/$reponame.db | cut -f2 -d ':' | grep $pkg -A1 | grep -v $pkg)
+		if ! [ "$localver" = "$newver" ]; then
+			echo "actualizando $pkg $localver -> $newver"
+			echo "Desinstalando $2 version vieja: $localver"
+			for file in "${files[@]}"; do
+				rm -rvf "$rootdir/$file"
+			done
+			rm "$pkgsdir/$pkg"
+
+			echo "Descargando $pkg version nueva: $newver"
+			curl $repo/$pkg.wpkg -o $pkgsdldir/$pkg-$newver.wpkg
+
+			echo "Instalando $pkg"
+			tar -xzvf $pkgsdldir/$pkg-$newver.wpkg -C $rootdir
+			mv $rootdir/$pkg $pkgsdir/$pkg
+			update=true
+		fi
+	done
+	if [ $update = false ]; then
+		echo "Todo esta actualizado"
+	fi
+fi
 
 if [ "$1" = "sync" ]; then
 	if ! [ -d $dbdir ]; then
@@ -42,8 +80,8 @@ if [ "$1" = "install" ]; then
 					tar -xzvf $pkgsdldir/$pkg.wpkg -C $rootdir
 					mv $rootdir/$pkg $pkgsdir/$pkg
 
-					if ! [ "$(cat $pkgsdir/$pkg)" = "" ]; then
-						deps=($(cat $pkgsdir/$pkg))
+					source $pkgsdir/$pkg
+					if ! [ "${deps[@]}" = "" ]; then
 						echo "Dependencias: ${deps[@]}"
 						for dep in "${deps[@]}"; do
 							$0 install $dep
@@ -71,6 +109,12 @@ if [ "$1" = "remove" ]; then
 					break
 				fi
 				echo "Desinstalando $2"
+				source  $pkgsdir/$pkgs
+
+				for file in "${files[@]}"; do
+					rm -rvf "$rootdir/$file"
+				done
+
 				rm "$pkgsdir/$2"
 				break
 			fi
