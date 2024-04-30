@@ -1,0 +1,54 @@
+#!/bin/bash
+if [ -f "$PWD/WAHBUILD" ]; then
+	source WAHBUILD
+else
+	echo "WAHBUILD not found."
+	exit 1
+fi
+
+if [ "$pkgname" = "" ]; then
+	echo "\"\$pkgname\" can't be empty."
+	exit 2
+fi
+
+if [ "$pkgver" = "" ]; then
+	echo "\"\$pkgver\" can't be empty."
+	exit 2
+fi
+
+echo "Building package: $pkgname version $pkgver..."
+
+if [ -f "$pkgname.wpkg" ]; then
+	echo "\"$pkgname.wpkg\" is already build, exiting."
+	exit 0
+fi
+
+if [ -d pkg ]; then
+	rm -rf pkg
+fi
+
+pkgdir="$PWD/pkg/$pkgname"
+mkdir -p $pkgdir
+
+if type buildpkg > /dev/null 2>&1; then
+	echo "Executing \$buildpkg()"
+	buildpkg
+fi
+
+if type package > /dev/null 2>&1; then
+	echo "Executing \$package()"
+	package
+fi
+
+cd $pkgdir
+
+echo "localver=\"$pkgver\"" > .pkginfo
+echo "localvercode=\"$(echo $pkgver | sed 's/[^0-9]//g')\"" >> .pkginfo
+echo "files=(" >> .pkginfo
+wah=($(find . -not -xtype d -mindepth 1 -not -name ".pkginfo" -printf '%P\n'))
+for file in "${wah[@]}"; do
+	echo -e "	\"$file\"" >> .pkginfo
+done
+echo ")" >> .pkginfo
+
+fakeroot tar -zcf ../../$pkgname.wpkg .
