@@ -2,7 +2,8 @@ pkgname="wpm"
 pkgver="Alpha-1.0.0"
 
 package(){
-	mkdir -p $pkgdir/usr/{share/{wpm,bash-completion/completions},bin} $pkgdir/var/lib/wpm/{pkg,sync/db}
+	mkdir -p $pkgdir/usr/{share/{wpm,bash-completion/completions},bin} $pkgdir/var/lib/wpm/{pkg,sync/db} $pkgdir/etc
+	cp wpm.conf $pkgdir/etc
 	cp makewpkg wpm $pkgdir/usr/bin
 	cp wpm_completion.bash $pkgdir/usr/share/bash-completion/completions
 	cp WAHBUILD.proto $pkgdir/usr/share/wpm/
