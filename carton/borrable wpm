@@ -1,6 +1,3 @@
-if [ -f "$dbdir/$reponame.db" ]; then
-
-fi
 inspkgs=($(basename -a $pkgsdir/* | cut -f1 -d'*'))
 inspkgsver=()
 for pkg in "${inspkgs[@]}"; do

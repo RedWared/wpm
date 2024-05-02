@@ -23,13 +23,13 @@ loadRepoPKGs(){
 		for (( repo = 1; repo < $((($reposlong / 2) + 1)); repo++ )); do
 			pkgs=($(zcat "$DBPath/sync/${reposNames[repo]}.db" | grep PKG: -A1 | cut -f3 -d ':' | grep -v \\--))
 			for pkg in "${pkgs[@]}"; do
-				pkgsver+=($(zcat $DBPath/sync/${reposNames[repo]}.db | grep $pkg -A1 | tail -n 1))
-				pkgsvercodes+=($(zcat $DBPath/sync/${reposNames[repo]}.db | grep $pkg -A2 | tail -n 1))
+				pkgsver+=($(zcat $DBPath/sync/${reposNames[repo]}.db | grep $pkg -A1 | head -n 2 | tail -n 1))
+				pkgsvercodes+=($(zcat $DBPath/sync/${reposNames[repo]}.db | grep $pkg -A2 | head -n 3 | tail -n 1))
 			done
 		done
 
 		for (( pkg = 0; pkg < "${#pkgs[@]}"; pkg++ )); do
-			pkgs[pkg]="${pkgs[pkg]},${pkgsver[pkg]},${pkgsvercodes[pkg]}"
+			pkgs[pkg]="${pkgs[pkg]},${pkgsver[pkg]},${pkgsvercodes[pkg]},${pkgs[pkg]}.wpkg"
 		done
 
 		unset pkgsver pkgsvercodes pkgsfiles
