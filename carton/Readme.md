@@ -4,7 +4,8 @@
 * bash
 * paste
 * column
-* gzip
+* rev
+* gzip (zcat)
 * wget
 * cut
 * mkdir
@@ -24,10 +25,16 @@
 
 > Error codes:
 
-| Exit code	| Cause										|
-| ---		| ---										|
-| -1		| Unkonow error.								|
-| 0		| Normal exit.									|
-| 1		| Configuration file (/etc/wpm.conf or $HOME/.config/wpm.conf) not found.	|
-| 2		| Unknow option									|
-| 3		| Package not specified								|
+| Exit code	| Cause							|
+| ---		| ---							|
+| -1		| Unkonow error.					|
+| 0		| Normal exit.						|
+| 1		| Main script not found.				|
+| 2		| Configuration not found.				|
+| 3		| Unknow option.					|
+| 4		| Invalid repository configuration detected.		|
+| 5		| Blank spaces in repositories configuration detected.	|
+| 6		| Duplicate repository name.				|
+| 7		| Duplicate repository usrl.				|
+| 8		| Not read permissions.					|
+| 9		| Not write permissions.				|

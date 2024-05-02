@@ -1,0 +1,41 @@
+pkgs=()
+inspkgs=()
+error=false
+updated=true
+
+checkDB(){
+	if ! [ "$1" = "sync" ]; then
+		for (( db = 1; db < $((($reposlong / 2) + 1)); db++ )); do
+			if ! [ -f "$DBPath/sync/${reposNames[db]}.db" ]; then
+				WARN "Data base file for \"${reposNames[db]}\" does not exist, please use \"$0 sync\""
+				error=true
+			fi
+		done
+	fi
+}
+checkDB
+
+loadRepoPKGs(){
+	if [ $error = false ]; then
+		pkgsver=()
+		pkgsvercodes=()
+		pkgsfiles=()
+		for (( repo = 1; repo < $((($reposlong / 2) + 1)); repo++ )); do
+			pkgs=($(zcat "$DBPath/sync/${reposNames[repo]}.db" | grep PKG: -A1 | cut -f3 -d ':' | grep -v \\--))
+			for pkg in "${pkgs[@]}"; do
+				pkgsver+=($(zcat $DBPath/sync/${reposNames[repo]}.db | grep $pkg -A1 | tail -n 1))
+				pkgsvercodes+=($(zcat $DBPath/sync/${reposNames[repo]}.db | grep $pkg -A2 | tail -n 1))
+			done
+		done
+
+		for (( pkg = 0; pkg < "${#pkgs[@]}"; pkg++ )); do
+			pkgs[pkg]="${pkgs[pkg]},${pkgsver[pkg]},${pkgsvercodes[pkg]}"
+		done
+
+		unset pkgsver pkgsvercodes pkgsfiles
+
+		for pkg in "${pkgs[@]}"; do
+			echo $pkg
+		done
+	fi
+}
