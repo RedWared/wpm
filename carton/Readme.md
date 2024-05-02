@@ -29,7 +29,7 @@
 | ---		| ---							|
 | -1		| Unkonow error.					|
 | 0		| Normal exit.						|
-| 1		| Main script not found.				|
+| 1		| Main or configuration script not found.		|
 | 2		| Configuration not found.				|
 | 3		| Unknow option.					|
 | 4		| Invalid repository configuration detected.		|
