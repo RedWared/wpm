@@ -35,6 +35,6 @@
 | 4		| Invalid repository configuration detected.		|
 | 5		| Blank spaces in repositories configuration detected.	|
 | 6		| Duplicate repository name.				|
-| 7		| Duplicate repository usrl.				|
+| 7		| Duplicate repository url.				|
 | 8		| Not read permissions.					|
 | 9		| Not write permissions.				|
