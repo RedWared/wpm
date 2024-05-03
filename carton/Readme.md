@@ -39,3 +39,4 @@
 | 7		| Duplicate repository url.				|
 | 8		| Not read permissions.					|
 | 9		| Not write permissions.				|
+| 10		| Failed downloading repository data base.		|

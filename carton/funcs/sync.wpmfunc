@@ -19,7 +19,12 @@ sync-wpm(){
 	fi
 	cd $DBPath/sync
 	for (( repo = 1; repo < $((($reposlong / 2) + 1)); repo++ )); do
-		wget "${reposUrl[repo]}/${reposNames[repo]}.db" --show-progress -qO ${reposNames[repo]}.db
+		if [ -f ${reposNames[repo]}.db ]; then
+			rm ${reposNames[repo]}.db
+		fi
+		if ! $(wget "${reposUrl[repo]}/${reposNames[repo]}.db" --show-progress -q); then
+			ERROR "Failed downloadind repository" 10
+		fi
 	done
 	checkUpd
 }
