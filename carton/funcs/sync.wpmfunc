@@ -23,7 +23,7 @@ sync-wpm(){
 			rm ${reposNames[repo]}.db
 		fi
 		if ! wah=$(wget "${reposUrl[repo]}/${reposNames[repo]}.db" --show-progress -q); then
-			ERROR "Failed downloadind repository" 10
+			ERROR "Failed downloading database from repository \"${reposNames[repo]}\"" 10
 		fi
 	done
 	checkUpd
