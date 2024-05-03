@@ -1,15 +1,25 @@
 sync-wpm(){
 	checkCRepo
 	INFO "Syncing."
-	if ! [ -d $DBPath/sync ]; then
-		checkRW $RootDir $1
+	if ! [ -d $DBPath ]; then
+		checkR "$( dirname $DBPath)" $1
+		checkW "$( dirname $DBPath)" $1
 		WARN "The data base directory does not exist, creating it."
-		mkdir -p $DBPath/sync
+		mkdir -p $DBPath
 	else
-		checkRW $RootDir "$1" "$2"
+		if ! [ -d $DBPath/sync ]; then
+			checkR $DBPath $1
+			checkW $DBPath $1
+			WARN "The data base directory does not exist, creating it."
+			mkdir -p $DBPath/sync
+		else
+			checkR "$( dirname $DBPath)" $1
+			checkW "$( dirname $DBPath)" $1
+		fi
 	fi
 	cd $DBPath/sync
 	for (( repo = 1; repo < $((($reposlong / 2) + 1)); repo++ )); do
 		wget "${reposUrl[repo]}/${reposNames[repo]}.db" --show-progress -qO ${reposNames[repo]}.db
 	done
+	checkUpd
 }

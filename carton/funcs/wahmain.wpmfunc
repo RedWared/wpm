@@ -3,10 +3,12 @@ echo -e "\e[0;33mWah Package-Manager\e[0m"
 INFO(){
 	echo -e "\e[0;32mINFO: \e[0;37m$1\e[0m"
 }
-checkRW(){
+checkR(){
 	if ! [ -r "$1" ]; then
 		ERROR "You don't have read permision on $1, try using \"sudo $0 $2\"" 8
 	fi
+}
+checkW(){
 	if ! [ -w "$1" ]; then
 		ERROR "You don't have write permision on $1, try using \"sudo $0 $2\"" 9
 	fi
@@ -19,7 +21,7 @@ if [ "$1" = "" ]; then
 else
 	source "$SRC/repos.wpmfunc"
 	source "$SRC/pkgs.wpmfunc"
-	loadRepoPKGs
+	source "$SRC/upgrade.wpmfunc"
 	case "$1" in
 		"help")
 			source "$SRC/${1}.wpmfunc"

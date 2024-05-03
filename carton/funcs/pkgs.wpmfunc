@@ -1,7 +1,6 @@
 pkgs=()
 inspkgs=()
 error=false
-updated=true
 
 checkDB(){
 	if ! [ "$1" = "sync" ]; then
@@ -13,9 +12,9 @@ checkDB(){
 		done
 	fi
 }
-checkDB
 
 loadRepoPKGs(){
+	checkDB
 	if [ $error = false ]; then
 		pkgsver=()
 		pkgsvercodes=()
@@ -25,17 +24,35 @@ loadRepoPKGs(){
 			for pkg in "${pkgs[@]}"; do
 				pkgsver+=($(zcat $DBPath/sync/${reposNames[repo]}.db | grep $pkg -A1 | head -n 2 | tail -n 1))
 				pkgsvercodes+=($(zcat $DBPath/sync/${reposNames[repo]}.db | grep $pkg -A2 | head -n 3 | tail -n 1))
+				pkgsfiles+=($(zcat $DBPath/sync/${reposNames[repo]}.db | grep $pkg -A3 | head -n 4 | tail -n 1))
 			done
 		done
 
 		for (( pkg = 0; pkg < "${#pkgs[@]}"; pkg++ )); do
-			pkgs[pkg]="${pkgs[pkg]},${pkgsver[pkg]},${pkgsvercodes[pkg]},${pkgs[pkg]}.wpkg"
+			pkgs[pkg]="${pkgs[pkg]},${pkgsver[pkg]},${pkgsvercodes[pkg]},${pkgsfiles[pkg]}"
 		done
 
 		unset pkgsver pkgsvercodes pkgsfiles
-
-		for pkg in "${pkgs[@]}"; do
-			echo $pkg
-		done
 	fi
+}
+
+loadInsPKGs(){
+	if ! [ -d "$DBPath/local/" ]; then
+		mkdir -p "$DBPath/local/"
+	fi
+
+	inspkgs=($(ls $DBPath/local))
+
+	_instmppkg=()
+	inspkgsver=()
+	inspkgsvercodes=()
+
+	for pkg in "${inspkgs[@]}"; do
+		source $DBPath/local/$pkg
+		_instmppkg+=("$pkg,$localver,$localvercode")
+	done
+
+	inspkgs=(${_instmppkg[@]})
+
+	unset inspkgsver inspkgsvercodes _instmppkg
 }

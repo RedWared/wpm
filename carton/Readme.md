@@ -12,6 +12,7 @@
 * basename
 * grep
 * tail
+* head
 
 > Dependencies for makewpkg
 * bash
