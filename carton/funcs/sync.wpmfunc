@@ -22,7 +22,7 @@ sync-wpm(){
 		if [ -f ${reposNames[repo]}.db ]; then
 			rm ${reposNames[repo]}.db
 		fi
-		if ! $(wget "${reposUrl[repo]}/${reposNames[repo]}.db" --show-progress -q); then
+		if ! wah=$(wget "${reposUrl[repo]}/${reposNames[repo]}.db" --show-progress -q); then
 			ERROR "Failed downloadind repository" 10
 		fi
 	done
