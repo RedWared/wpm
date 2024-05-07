@@ -2,10 +2,10 @@ sync-wpm(){
 	checkCRepo
 	INFO "Syncing."
 	if ! [ -d $DBPath ]; then
-		checkR "$( dirname $DBPath)" $1
-		checkW "$( dirname $DBPath)" $1
+		checkR "$(dirname $DBPath)" $1
+		checkW "$(dirname $DBPath)" $1
 		WARN "The data base directory does not exist, creating it."
-		mkdir -p $DBPath
+		mkdir -p $DBPath/sync
 	else
 		if ! [ -d $DBPath/sync ]; then
 			checkR $DBPath $1

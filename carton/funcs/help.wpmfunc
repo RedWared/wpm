@@ -13,5 +13,6 @@ help-wpm(){
 	HELP "help               " "Show this message and exit."
 	HELP "sync               " "Synchronize repositories."
 	HELP "info               " "Show configuration information."
+	HELP "list               " "List installed packages."
 	PRINTHELP
 }

@@ -40,3 +40,5 @@
 | 8		| Not read permissions.					|
 | 9		| Not write permissions.				|
 | 10		| Failed downloading repository data base.		|
+| 11		| Package not especified.				|
+| 12		| Package not found.					|

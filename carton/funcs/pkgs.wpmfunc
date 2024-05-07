@@ -19,26 +19,32 @@ loadRepoPKGs(){
 		pkgsver=()
 		pkgsvercodes=()
 		pkgsfiles=()
+		pkgsrepo=()
 		for (( repo = 1; repo < $((($reposlong / 2) + 1)); repo++ )); do
 			pkgs=($(zcat "$DBPath/sync/${reposNames[repo]}.db" | grep PKG: -A1 | cut -f3 -d ':' | grep -v \\--))
 			for pkg in "${pkgs[@]}"; do
 				pkgsver+=($(zcat $DBPath/sync/${reposNames[repo]}.db | grep $pkg -A1 | head -n 2 | tail -n 1))
 				pkgsvercodes+=($(zcat $DBPath/sync/${reposNames[repo]}.db | grep $pkg -A2 | head -n 3 | tail -n 1))
 				pkgsfiles+=($(zcat $DBPath/sync/${reposNames[repo]}.db | grep $pkg -A3 | head -n 4 | tail -n 1))
+				pkgsrepo+=(${reposNames[repo]})
 			done
 		done
 
 		for (( pkg = 0; pkg < "${#pkgs[@]}"; pkg++ )); do
-			pkgs[pkg]="${pkgs[pkg]},${pkgsver[pkg]},${pkgsvercodes[pkg]},${pkgsfiles[pkg]}"
+			pkgs[pkg]="${pkgs[pkg]},${pkgsver[pkg]},${pkgsvercodes[pkg]},${pkgsfiles[pkg]},${pkgsrepo[pkg]}"
 		done
 
-		unset pkgsver pkgsvercodes pkgsfiles
+		unset pkgsver pkgsvercodes pkgsfiles pkgsrepo
 	fi
 }
 
 loadInsPKGs(){
 	if ! [ -d "$DBPath/local/" ]; then
 		mkdir -p "$DBPath/local/"
+		if [ -d $DBPath ]; then
+			checkR $DBPath
+			checkW $DBPath
+		fi
 	fi
 
 	inspkgs=($(ls $DBPath/local))
@@ -55,4 +61,15 @@ loadInsPKGs(){
 	inspkgs=(${_instmppkg[@]})
 
 	unset inspkgsver inspkgsvercodes _instmppkg
+}
+
+list-wpm(){
+	source "$SRC/help.wpmfunc"
+	loadInsPKGs
+	for pkg in "${inspkgs[@]}"; do
+		HELP "Package:                    " "Version:"
+		HELP "$(echo $pkg | cut -d',' -f1)" "$(echo $pkg | cut -d',' -f2)"
+	done
+	HELP "Total packages instelled:" "${#inspkgs[@]}"
+	PRINTHELP
 }

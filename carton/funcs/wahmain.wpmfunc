@@ -30,6 +30,13 @@ else
  		"sync")
 			source "$SRC/${1}.wpmfunc"
 			${1}-wpm $@
+		;;
+		"install")
+			source "$SRC/${1}.wpmfunc"
+			${1}-wpm $2 $1
+		;;
+		"list")
+			${1}-wpm
  		;;
  		"info")
 			source "$SRC/help.wpmfunc"
