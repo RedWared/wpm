@@ -3,15 +3,38 @@ echo -e "\e[0;33mWah Package-Manager\e[0m"
 INFO(){
 	echo -e "\e[0;32mINFO: \e[0;37m$1\e[0m"
 }
+MinDir(){
+	IFS="/" read -ra Dir <<< "$1"
+	ReDir=""
+	DirArray=()
+
+	for DirPart in "${Dir[@]}"; do
+		ReDir+="$DirPart/"
+		DirArray+=("$ReDir")
+	done
+
+	unset ReDir Dir
+
+	for (( longDir=${#DirArray[@]}-1; longDir>=0; longDir-- )); do
+		if [ -d "${DirArray[longDir]}" ]; then
+			echo "${DirArray[longDir]}"
+			break
+		fi
+	done
+}
 checkR(){
-	if ! [ -r "$1" ]; then
-		ERROR "You don't have read permision on $1, try using \"sudo $0 $2\"" 8
-	fi
+	for dir in "$(MinDir $1)"; do
+		if ! [ -r "$dir" ]; then
+			ERROR "You don't have read permision on $1, try using \"sudo $0 $2\"" 8
+		fi
+	done
 }
 checkW(){
-	if ! [ -w "$1" ]; then
-		ERROR "You don't have write permision on $1, try using \"sudo $0 $2\"" 9
-	fi
+	for dir in "$(MinDir $1)"; do
+		if ! [ -w "$dir" ]; then
+			ERROR "You don't have write permision on $1, try using \"sudo $0 $2\"" 9
+		fi
+	done
 }
 
 ver="2.0.0"
