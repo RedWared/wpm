@@ -1,0 +1,16 @@
+findpkg=false
+deps=("")
+if ! [ "$1" = "" ]; then
+	case "$1" in
+		"remove")
+			echo desinstalando
+		;;
+		"upgrade")
+			echo actualizando
+		;;
+		"help")
+			HELP "remove   <pkg>     " "Remove packages."
+			HELP "upgrade            " "Upgrade packages."
+		;;
+	esac
+fi

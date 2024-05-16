@@ -1,0 +1,60 @@
+install-wpm(){
+	loadInsPKGs
+	loadRepoPKGs
+	if ! [ -d $CacheDir ]; then
+		checkR $(dirname $CacheDir) $2
+		checkW $(dirname $CacheDir) $2
+		mkdir -p $CacheDir/pkg
+	else
+		if ! [ -d $CacheDir/pkg ]; then
+			checkR $CacheDir $2
+			checkW $CacheDir $2
+			mkdir -p $CacheDir/pkg
+		else
+			checkR $(dirname $CacheDir) $2
+			checkW $(dirname $CacheDir) $2
+		fi
+	fi
+	cd $CacheDir/pkg
+	echo "$0, $1, $2"
+	if [ "$2" = "" ]; then
+		ERROR "Do you need especified a package" 11
+	else
+		for pkg in "${pkgs[@]}"; do
+			if [ "$1" = "$(echo $pkg | cut -d',' -f1)" ]; then
+				if [ -f "$DBPath/local/$1" ]; then
+					INFO "$1 is already installed."
+				else
+					INFO "Downloading $(echo $pkg | cut -d',' -f5)/$1"
+					if [ -f "$(basename $(echo $pkg | cut -d',' -f4))" ]; then
+						rm "$(basename $(echo $pkg | cut -d',' -f4))"
+					fi
+					wget $(echo $pkg | cut -d',' -f6)/$(echo $pkg | cut -d',' -f4) --show-progress -q
+					INFO "Extracting $(echo $pkg | cut -d',' -f4)"
+					if ! [ -d "$CacheDir/ext" ]; then
+						mkdir "$CacheDir/ext"
+					fi
+					extfile="$(echo $pkg | cut -d',' -f4)"
+					pv $extfile | tar -zxf - -C "$CacheDir/ext/"
+					mv "$CacheDir/ext/.pkginfo" "$DBPath/local/$1"
+					echo "reason=0" >> "$DBPath/local/$1"
+					source "$DBPath/local/$1"
+					for file in "${files[@]}"; do
+						if [ "$RootDir" = "/" ]; then
+							pkgpath="/$(dirname $file)"
+						else
+							pkgpath="$RootDir/$(dirname $file)"
+						fi
+						if ! [ -d "$pkgpath" ]; then
+							mkdir -p $pkgpath
+						fi
+						mv $CacheDir/ext/$file $pkgpath
+					done
+					break
+				fi
+			else
+				ERROR "Package $1 not found" 12
+			fi
+		done
+	fi
+}
