@@ -1,0 +1,14 @@
+if [ -f "${WAHROOT}/etc/makewpkg.conf" ]; then
+	source "${WAHROOT}/etc/makewpkg.conf"
+else
+	if [ -f "$HOME/.config/makewpkg.conf" ]; then
+		source "$HOME/.config/makewpkg.conf"
+	else
+		if [ -f "$PWD/Docs/makewpkg.conf" ]; then
+			WARN "Local directory config."
+			source "$PWD/Docs/makewpkg.conf"
+		else
+			ERROR "Configuration not found" 2
+		fi
+	fi
+fi

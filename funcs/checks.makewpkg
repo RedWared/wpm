@@ -1,0 +1,39 @@
+checks-wah(){
+	if [ -f "$PWD/WAHBUILD" ]; then
+		source WAHBUILD
+	else
+		ERROR "Not \"WAHBUILD\" found" 4
+	fi
+
+	# Check empity variables
+	if [ "$pkgname" = "" ]; then
+		ERROR "\"\$pkgname\" can't be empty" 5
+	fi
+	if [ "$pkgver" = "" ]; then
+		ERROR "\"\$pkgver\" can't be empty" 5
+	fi
+	if [ "$pkgrel" = "" ]; then
+		ERROR "\"\$pkgrel\" can't be empty" 5
+	fi
+
+	pkgfile="$pkgname-$pkgver-$pkgrel.wpkg"
+
+	if [ -f "$pkgfile" ]; then
+		WARN "\"$pkgfile\" is already build, exiting."
+		exit 0
+	fi
+
+	if [ -d pkg ]; then
+		rm -rf pkg
+	fi
+
+	pkgdir="$PWD/pkg/$pkgname"
+	srcdir="$PWD/src"
+
+	if ! [ -d "$pkgdir" ]; then
+		mkdir -p $pkgdir
+	fi
+	if ! [ -d "$srcdir" ]; then
+		mkdir -p $srcdir
+	fi
+}

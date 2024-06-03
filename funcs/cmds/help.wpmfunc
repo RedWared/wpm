@@ -1,0 +1,15 @@
+helpArray=()
+HELP(){
+	helpArray+=("\e[0;32m$1" "|" "\e[0;37m$2\e[0m")
+}
+PRINTHELP(){
+	for cmdhelp in "${helpArray[@]}"; do
+		echo -e "$cmdhelp"
+	done | paste - - - | column -t -s "|"
+}
+help-makewpkg(){
+	INFO "Use: $(basename $0) [Option] <argument>"
+	HELP "[Option]  " "Description:"
+	HELP "-h, --help" "Show this message and exit."
+	PRINTHELP
+}
