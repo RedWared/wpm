@@ -3,32 +3,22 @@ INFO(){
 }
 
 wahmain(){
+	builddir=$PWD
+
 	source "$SRC/checks.makewpkg"
 	checks-wah
 	INFO "Making package: \"$pkgfile\""
 
-	# Exec WAHBUILD functions.
-	if type buildpkg > /dev/null 2>&1; then
-		INFO "Executing \$build() in compatibility mode."
-		buildpkg
-	fi
-	if type build > /dev/null 2>&1; then
-		echo "Executing \$build()"
-		build
-	fi
-	if type package > /dev/null 2>&1; then
-		echo "Executing \$package()"
-		package
-	fi
-
 	cd $pkgdir
 
-	echo "localver=\"$pkgver\"" > .pkginfo
-	echo "localvercode=\"$(echo $pkgver | sed 's/[^0-9]//g')\"" >> .pkginfo
-	echo "files=(" >> .pkginfo
-	echo ")" >> .pkginfo
+	source "$SRC/functions.makewpkg"
+	funcs-wah
 
-	fakeroot tar -zcf ../../$pkgfile .
+	source "$SRC/sources.makewpkg"
+	sources-wah
+
+	source "$SRC/package.makewpkg"
+	package-wah
 }
 
 larCMD=("help")

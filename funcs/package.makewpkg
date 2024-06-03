@@ -1,0 +1,16 @@
+package-wah(){
+	INFO "Generating \".pkginfo\""
+	echo "localver=\"$pkgver\"" > .pkginfo
+	echo "localvercode=\"$(echo $pkgver | sed 's/[^0-9]//g')\"" >> .pkginfo
+	echo "files=(" >> .pkginfo
+
+	wah=($(find . -not -xtype d -not -name ".pkginfo" -printf '%P\n'))
+
+	for file in "${wah[@]}"; do
+		echo -e "	\"$file\"" >> .pkginfo
+	done
+
+	echo ")" >> .pkginfo
+
+	fakeroot tar -zcf ../../$pkgfile .
+}

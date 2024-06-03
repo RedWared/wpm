@@ -1,0 +1,15 @@
+funcs-wah(){
+	# Exec WAHBUILD functions.
+	if type buildpkg > /dev/null 2>&1; then
+		INFO "Executing \$build() in compatibility mode."
+		buildpkg
+	fi
+	if type build > /dev/null 2>&1; then
+		echo "Executing \$build()"
+		build
+	fi
+	if type package > /dev/null 2>&1; then
+		echo "Executing \$package()"
+		package
+	fi
+}

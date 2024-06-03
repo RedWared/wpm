@@ -1,0 +1,11 @@
+sources-wah(){
+	if [ "${#source[@]}" -gt 0 ]; then
+		for file in "${source[@]}"; do
+			if ! [ -f "$builddir/$file" ]; then
+				ERROR "Can't found \"$file\" in the directory" 6
+			else
+				ln -s $builddir/$file $srcdir/$file
+			fi
+		done
+	fi
+}

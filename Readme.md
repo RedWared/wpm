@@ -17,3 +17,4 @@
 | 3		| Unknow option.				|
 | 4		| Can't find WAHBUILD in actual directory.	|
 | 5		| Important variable empity in WAHBUILD.	|
+| 6		| File specified on "source" not found.		|

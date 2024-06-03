@@ -1,6 +1,0 @@
-#!/bin/bash
-
-wah=($(find . -not -xtype d -mindepth 1 -not -name ".pkginfo" -printf '%P\n'))
-for file in "${wah[@]}"; do
-	echo -e "	\"$file\"" >> .pkginfo
-done

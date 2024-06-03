@@ -1,3 +1,4 @@
 pkgname="wah"
 pkgver=1.0
 pkgrel=1
+source=("wah")
