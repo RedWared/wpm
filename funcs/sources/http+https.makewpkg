@@ -1,0 +1,19 @@
+http+https(){
+	if [ "${1:0:8}" = "https://" ] || [ "${1:0:7}" = "http://" ]; then
+		if [[ "${1:8}" =~ "/" ]]; then
+			filename=$(echo $1 | rev | cut -d '/' -f1 | rev)
+		else
+			ERROR "Can't dowload this" 8
+		fi
+		if ! [ -f "$filename" ]; then
+			wget $1 -qO $filename --show-progress
+		fi
+		if [ $? -eq 4 ]; then
+			ERROR "Can't resolve hostname: $1" 7
+		fi
+		if [ $? -eq 8 ]; then
+			ERROR "Error 404: Can't find file in remote host: $1" 7
+		fi
+		fail=false
+	fi
+}

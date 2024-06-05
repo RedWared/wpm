@@ -2,22 +2,36 @@ INFO(){
 	echo -e "\e[0;32mINFO: \e[0;37m$1\e[0m"
 }
 
+cmdChk() {
+	if ! cmd=$(command -v "$1" 2>/dev/null); then
+		ERROR "$1 not found" 1
+	fi
+}
+
+loadSRC(){
+	if [ "$1" = "" ]; then
+		ERROR "Do you need specified an script in 'loadSRC' functions" -1
+	fi
+	if [ -f "$SRC/$1" ]; then
+		source "$SRC/$1"
+	else
+		ERROR "Can't find \"$SRC/$1\"" 1
+	fi
+}
+
 wahmain(){
 	builddir=$PWD
 
-	source "$SRC/checks.makewpkg"
+	loadSRC "checks.makewpkg"
+	loadSRC "sources.makewpkg"
+	loadSRC "functions.makewpkg"
+	loadSRC "package.makewpkg"
+
 	checks-wah
 	INFO "Making package: \"$pkgfile\""
 
-	cd $pkgdir
-
-	source "$SRC/functions.makewpkg"
-	funcs-wah
-
-	source "$SRC/sources.makewpkg"
 	sources-wah
-
-	source "$SRC/package.makewpkg"
+	funcs-wah
 	package-wah
 }
 
@@ -34,7 +48,7 @@ else
 		if [ "${cmd:0:2}" = "--" ]; then
 			for lCMD in "${larCMD[@]}"; do
 				if [ "$(echo $cmd | cut -d '-' -f3-)" = "$lCMD" ]; then
-					source "$SRC/cmds/help.wpmfunc"
+					loadSRC "cmds/help.wpmfunc"
 					${lCMD}-makewpkg
 				else
 					ERROR "Unknow option \"$cmd\"" 3

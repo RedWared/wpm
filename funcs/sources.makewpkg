@@ -1,11 +1,30 @@
+foundFile(){
+	if [ -f "$builddir/$1" ]; then
+		INFO "Found \"$1\"..."
+	else
+		ERROR "Can't found \"$1\" in the directory" 6
+	fi
+}
+
 sources-wah(){
 	if [ "${#source[@]}" -gt 0 ]; then
+		loadSRC "sources/http+https.makewpkg"
+		loadSRC "extract.makewpkg"
 		for file in "${source[@]}"; do
-			if ! [ -f "$builddir/$file" ]; then
-				ERROR "Can't found \"$file\" in the directory" 6
-			else
-				ln -s $builddir/$file $srcdir/$file
+			fail=true
+
+			http+https "$file"
+
+
+			if [ $fail = true ]; then
+				filename=$file
 			fi
+
+			foundFile "$filename"
+
+			ln -sf $builddir/$filename $srcdir/$filename
+
+			extr-wah $srcdir/$filename "$srcdir"
 		done
 	fi
 }

@@ -9,11 +9,11 @@ WARN(){
 	echo -e "\e[1;33mWARN: \e[0;37m$1\e[0m"
 }
 
-if [ -f "${WAHROOT}/usr/lib/wpm/config.makewpkg" ]; then
-	source "${WAHROOT}/usr/lib/wpm/config.makewpkg"
+if [ -f "${WAHROOT}/usr/lib/makewpkg/config.makewpkg" ]; then
+	source "${WAHROOT}/usr/lib/makewpkg/config.makewpkg"
 else
-	if [ -f "${HOME}/.local/usr/lib/wpm/config.makewpkg" ]; then
-		source "${HOME}/.local/usr/lib/wpm/wpm/config.makewpkg"
+	if [ -f "${HOME}/.local/usr/lib/makewpkg/config.makewpkg" ]; then
+		source "${HOME}/.local/usr/lib/makewpkg/config.makewpkg"
 	else
 		if [ -f "${PWD}/funcs/config.makewpkg"  ]; then
 			source "${PWD}/funcs/config.makewpkg"
@@ -23,20 +23,19 @@ else
 	fi
 fi
 
-if [ -f "${WAHROOT}/usr/lib/wpm/wahmain.makewpkg" ]; then
-	SRC="${WAHROOT}/usr/lib/wpm"
-	source "${WAHROOT}/usr/lib/wpm/wahmain.makewpkg"
+if [ -f "${WAHROOT}/usr/lib/makewpkg/wahmain.makewpkg" ]; then
+	SRC="${WAHROOT}/usr/lib/makewpkg"
 else
-	if [ -f "${HOME}/.local/usr/lib/wpm/wahmain.makewpkg" ]; then
-		SRC="${HOME}/.local/usr/lib/wpm"
-		source "${HOME}/.local/usr/lib/wpm/wahmain.makewpkg"
+	if [ -f "${HOME}/.local/usr/lib/makewpkg/wahmain.makewpkg" ]; then
+		SRC="${HOME}/.local/usr/lib/makewpkg"
 	else
 		if [ -f "${PWD}/funcs/wahmain.makewpkg"  ]; then
-			SRC="$PWD/funcs"
+			SRC="${PWD}/funcs"
 			WARN "Local mode."
-			source "${PWD}/funcs/wahmain.makewpkg"
 		else
 			ERROR "Make Wah-Package main script not found" 1
 		fi
 	fi
 fi
+
+source "$SRC/wahmain.makewpkg"

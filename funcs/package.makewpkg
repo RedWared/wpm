@@ -1,4 +1,5 @@
 package-wah(){
+	cd $pkgdir
 	INFO "Generating \".pkginfo\""
 	echo "localver=\"$pkgver\"" > .pkginfo
 	echo "localvercode=\"$(echo $pkgver | sed 's/[^0-9]//g')\"" >> .pkginfo
@@ -12,5 +13,15 @@ package-wah(){
 
 	echo ")" >> .pkginfo
 
-	fakeroot tar -zcf ../../$pkgfile .
+	case $comp in
+		"gzip")
+			cmdChk gzip
+			
+			INFO "Compressing package \"$pkgname\" with Gun Zip"
+			fakeroot bsdtar -zcf ../../$pkgfile .
+		;;
+		*)
+			ERROR "Compression format \"$comp\" not suported" 11
+		;;
+	esac
 }
