@@ -17,6 +17,10 @@ extr-wah(){
 			cmdChk gzip
 			pv $1 | bsdtar -zx --file=- -C $2
 		;;
+		*".tar.bz2")
+			cmdChk bzip2
+			pv $1 | bsdtar -jx --file=- -C $2
+		;;
 		*)
 			compress=false
 		;;

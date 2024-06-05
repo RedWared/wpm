@@ -8,6 +8,8 @@ cmdChk() {
 	fi
 }
 
+cmdChk tar
+
 loadSRC(){
 	if [ "$1" = "" ]; then
 		ERROR "Do you need specified an script in 'loadSRC' functions" -1
