@@ -1,17 +1,22 @@
 funcs-wah(){
 	cd "$srcdir"
-	# Exec WAHBUILD functions.
-	if type buildpkg > /dev/null 2>&1; then
-		INFO "Executing \$build() in compatibility mode."
-		buildpkg
+	if type prepare > /dev/null 2>&1; then
+		cd "$srcdir"
+		echo "Executing \$prepare()"
+		prepare
 	fi
-	cd "$srcdir"
 	if type build > /dev/null 2>&1; then
+		cd "$srcdir"
 		echo "Executing \$build()"
 		build
 	fi
-	cd "$srcdir"
+	if type check > /dev/null 2>&1; then
+		cd "$srcdir"
+		echo "Executing \$check()"
+		check
+	fi
 	if type package > /dev/null 2>&1; then
+		cd "$srcdir"
 		echo "Executing \$package()"
 		package
 	fi
