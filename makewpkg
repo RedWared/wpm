@@ -23,7 +23,7 @@ URL="https://github.com/RedWared/wpm/tree/makewpkg"
 AUTHOR="Isaac David Orozco Delgado (Reisy RedPanda)"
 EMAIL="opensrcrdp@gmail.com"
 
-cmdCheck dirname
+cmdChk dirname
 
 if [ -f "${WAHROOT}/usr/lib/makewpkg/config.wah" ]; then
 	CFG="${WAHROOT}/usr/lib/makewpkg"
