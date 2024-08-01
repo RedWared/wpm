@@ -10,7 +10,7 @@ ERROR(){
 WARN(){
 	echo -e "\e[1;33mWARN: \e[0;37m$1\e[0m"
 }
-cmdCheck() {
+cmdChk() {
 	if ! type "$1" > /dev/null 2>&1; then
 		echo "$1 not found"
 		exit 1
