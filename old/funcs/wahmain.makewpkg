@@ -39,7 +39,6 @@ wahmain(){
 
 larCMD=("help")
 shoCMD=("h")
-ver="2.0.0"
 
 if [ "$1" = "" ]; then
 	wahmain
