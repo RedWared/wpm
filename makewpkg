@@ -1,1 +1,53 @@
-makewpkg-V2
+#!/bin/bash
+ERROR(){
+	echo -e "\e[0;31mERROR: \e[1;37m$1,\e[0;31m Aborting...\e[0m"
+	exit $2
+}
+WARN(){
+	echo -e "\e[1;33mWARN: \e[0;37m$1\e[0m"
+}
+cmdCheck() {
+	if ! type "$1" > /dev/null 2>&1; then
+		echo "$1 not found"
+		exit 1
+	fi
+}
+
+NAME="Make Wah-Package"
+VER="Alpha-2.0"
+URL="https://github.com/RedWared/wpm/tree/makewpkg"
+AUTHOR="Isaac David Orozco Delgado (Reisy RedPanda)"
+EMAIL="opensrcrdp@gmail.com"
+
+cmdCheck dirname
+
+if [ -f "${WAHROOT}/usr/lib/makewpkg/config.wah" ]; then
+	CFG="${WAHROOT}/usr/lib/makewpkg"
+else
+	if [ -f "${HOME}/.local/usr/lib/makewpkg/config.wah" ]; then
+		CFG="${HOME}/.local/usr/lib/makewpkg"
+	else
+		if [ -f "$(dirname $0)/funcs/config.wah" ]; then
+			CFG="$(dirname $0)/funcs"
+		else
+			ERROR "$NAME configuration script not found" 1
+		fi
+	fi
+fi
+source "${CFG}/config.wah"
+
+if [ -f "${WAHROOT}/usr/lib/makewpkg/wahmain.wah" ]; then
+	SRC="${WAHROOT}/usr/lib/makewpkg"
+else
+	if [ -f "${HOME}/.local/usr/lib/makewpkg/wahmain.wah" ]; then
+		SRC="${HOME}/.local/usr/lib/makewpkg"
+	else
+		if [ -f "$(dirname $0)/funcs/wahmain.wah" ]; then
+			SRC="$(dirname $0)/funcs"
+			WARN "Working on local directory mode."
+		else
+			ERROR "$NAME main script not found" 1
+		fi
+	fi
+fi
+source "${SRC}/wahmain.wah"

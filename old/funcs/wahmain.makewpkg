@@ -41,8 +41,6 @@ larCMD=("help")
 shoCMD=("h")
 ver="2.0.0"
 
-echo -e "\e[0;33mMake Wah-Package\e[0m"
-
 if [ "$1" = "" ]; then
 	wahmain
 else
