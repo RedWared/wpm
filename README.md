@@ -10,7 +10,7 @@ A tool for build packages for Wah Package-Manager inspired on makepkg from arch.
 * xz (for decompression, optional)
 * zstd (for decompression, optional)
 
-> Installing dependencies on Arch Linux or derivatives (Note: All of this except zstd is in the base ArchLinux package, but you probably already have it.)
+> Installing dependencies on Arch Linux or derivatives. <br> Note: All of this except zstd is in the base ArchLinux package, but you probably already have it.
 ```
 sudo pacman -S bash coreutils gzip xz zstd
 ```
