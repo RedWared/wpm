@@ -4,10 +4,17 @@ A tool for build packages for Wah Package-Manager inspired on makepkg from arch.
 ## Dependencies:
 * bash
 * dirname (coreutils)
+* mv (coreutils)
+* touch (coreutils)
+* gzip (for compression and decompression)
+* xz (for decompression)
+* zstd (for decompression)
+* 
+* 
 
 > Installing dependencies on Arch Linux or derivatives
 ```
-sudo pacman -S bash coreutils
+sudo pacman -S bash coreutils gzip
 ```
 
 ## Error codes

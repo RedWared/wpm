@@ -35,18 +35,22 @@ wah-repo(){
 		case "$(file $1.db|cut -d ' ' -f2)" in
 			"ASCII")
 				INFO "$1.db is plain text, moving to $1"
+				cmdChk mv
 				mv "$1.db" "$1"
 			;;
 			"gzip")
 				INFO "$1.db is Gun zip, uncompressing"
+				cmdChk gzip
 				gzip --suffix=.db $1.db -d
 			;;
 			"XZ")
 				INFO "$1.db is XZ, uncompressing"
+				cmdChk xz
 				xz --suffix=.db $1.db -d
 			;;
 			"Zstandard")
 				INFO "$1.db is Zstandard, uncompressing"
+				cmdChk zstd
 				zstd wah.db -o wah -d
 			;;
 			*)
@@ -55,6 +59,7 @@ wah-repo(){
 		esac
 	else
 		INFO "$1.db don't exist, creatting $1"
+		cmdChk touch
 		touch $1
 	fi
 
@@ -146,5 +151,6 @@ if [ $# -lt 2 ]; then
 	echo "Usage: $0 <reponame> (pkg)"
 else
 	wah-repo $1 $2
+	cmdChk gzip
 	gzip --suffix=.db $1
 fi
