@@ -1,0 +1,35 @@
+# Copyright: Isaac David Orozco Delgado (c) 2024
+# GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+VER="Alpha-2.0"
+URL="https://github.com/RedWared/wpm/tree/makewpkg"
+AUTHOR="Isaac David Orozco Delgado (Reisy RedPanda)"
+EMAIL="opensrcrdp@gmail.com"
+
+ERROR(){
+	echo -e "\e[0;31mERROR: \e[1;37m$1,\e[0;31m Aborting...\e[0m"
+	exit $2
+}
+WARN(){
+	echo -e "\e[1;33mWARN: \e[0;37m$1\e[0m"
+}
+INFO(){
+	echo -e "\e[0;32mINFO: \e[0;37m$1\e[0m"
+}
+
+if [ -f "${WAHROOT}/usr/lib/makewpkg/config.wah" ]; then
+	CFG="${WAHROOT}/usr/lib/makewpkg"
+else
+	if [ -f "${HOME}/.local/usr/lib/makewpkg/config.wah" ]; then
+		CFG="${HOME}/.local/usr/lib/makewpkg"
+	else
+		if [ -f "$(dirname $0)/funcs/config.wah" ]; then
+			CFG="$(dirname $0)/funcs"
+			WARN "Loading local config script ($(dirname $0)/funcs/config.wah)"
+		else
+			ERROR "$NAME configuration script not found" 1
+		fi
+	fi
+fi
+source "${CFG}/config.wah"

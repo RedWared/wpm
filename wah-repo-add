@@ -1,0 +1,150 @@
+#!/bin/bash
+# Copyright: Isaac David Orozco Delgado (c) 2024
+# GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+cmdChk() {
+	if ! type "$1" > /dev/null 2>&1; then
+		echo -e "\e[0;31mERROR: \e[1;37m$1 not found,\e[0;31m Aborting...\e[0m"
+		exit 2
+	fi
+}
+
+NAME="Make Wah-Package wah repo add"
+cmdChk dirname
+
+if [ -f "${WAHROOT}/usr/lib/makewpkg/core.wah" ]; then
+	CORE="${WAHROOT}/usr/lib/makewpkg"
+else
+	if [ -f "${HOME}/.local/usr/lib/makewpkg/core.wah" ]; then
+		CORE="${HOME}/.local/usr/lib/makewpkg"
+	else
+		if [ -f "$(dirname $0)/funcs/core.wah" ]; then
+			CORE="$(dirname $0)/funcs"
+			echo "WARN: Working on local directory core mode."
+		else
+			echo "ERROR: $NAME core script not found"
+			exit 1
+		fi
+	fi
+fi
+source "${CORE}/core.wah"
+
+wah-repo(){
+	if [ -f "$1.db" ]; then
+		case "$(file $1.db|cut -d ' ' -f2)" in
+			"ASCII")
+				INFO "$1.db is plain text, moving to $1"
+				mv "$1.db" "$1"
+			;;
+			"gzip")
+				INFO "$1.db is Gun zip, uncompressing"
+				gzip --suffix=.db $1.db -d
+			;;
+			"XZ")
+				INFO "$1.db is XZ, uncompressing"
+				xz --suffix=.db $1.db -d
+			;;
+			"Zstandard")
+				INFO "$1.db is Zstandard, uncompressing"
+				zstd wah.db -o wah -d
+			;;
+			*)
+				ERROR "$(file $1 | cut -d ' ' -f2) not supported" 3
+			;;
+		esac
+	else
+		INFO "$1.db don't exist, creatting $1"
+		touch $1
+	fi
+
+	unset localname localver localvercode url arch localdesc localdepends localoptdepends localconflicts localprovides localgroups
+	eval $(tar -xzO -f $2 ./.PKGINFO)
+
+	echo "PKG:'$localname'" >> "$1"
+	echo "VER:'$localver'" >> "$1"
+	echo "VERCODE:$localvercode" >> "$1"
+
+	if ! [ -z "$url" ]; then
+		echo "URL:'$url'" >> "$1"
+	fi
+
+	echo "ARCH:'$arch'" >> "$1"
+
+	if ! [ -z "$localdesc" ]; then
+		echo "DESC:'$localdesc'" >> "$1"
+	fi
+
+	if ! [ -z "$localdepends" ]; then
+		printf "DEPS:" >> "$1"
+		for dep in "${localdepends[@]}"; do
+			if [ "${localdepends[0]}" = "$dep" ]; then
+				printf "'$dep'" >> "$1"
+			else
+				printf ",'$dep'" >> "$1"
+			fi
+		done
+		echo >> "$1"
+	fi
+
+	if ! [ -z "$localoptdepends" ]; then
+		printf "OPTDEPS:" >> "$1"
+		for dep in "${localoptdepends[@]}"; do
+			if [ "${localoptdepends[0]}" = "$dep" ]; then
+				printf "'$dep'" >> "$1"
+			else
+				printf ",'$dep'" >> "$1"
+			fi
+		done
+		echo >> "$1"
+	fi
+
+	if ! [ -z "$localconflicts" ]; then
+		printf "CONFLICS:" >> "$1"
+		for con in "${localconflicts[@]}"; do
+			if [ "${localconflicts[0]}" = "$con" ]; then
+				printf "'$con'" >> "$1"
+			else
+				printf ",'$con'" >> "$1"
+			fi
+		done
+		echo >> "$1"
+	fi
+
+	if ! [ -z "$localprovides" ]; then
+		printf "PROV:" >> "$1"
+		for prov in "${localprovides[@]}"; do
+			if [ "${localprovides[0]}" = "$prov" ]; then
+				printf "'$prov'" >> "$1"
+			else
+				printf ",'$prov'" >> "$1"
+			fi
+		done
+		echo >> "$1"
+	fi
+
+	if ! [ -z "$localgroups" ]; then
+		printf "GROUPS:" >> "$1"
+		for group in "${localgroups[@]}"; do
+			if [ "${localgroups[0]}" = "$group" ]; then
+				printf "'$group'" >> "$1"
+			else
+				printf ",'$group'" >> "$1"
+			fi
+		done
+		echo >> "$1"
+	fi
+
+	echo "FILE:'$2'" >> "$1"
+
+	echo "HASH:SHA256:$(sha256sum $2 | cut -d ' ' -f1)" >> "$1"
+
+	echo -e "ENDPKG\n" >> "$1"
+}
+
+if [ $# -lt 2 ]; then
+	echo "Usage: $0 <reponame> (pkg)"
+else
+	wah-repo $1 $2
+	gzip --suffix=.db $1
+fi

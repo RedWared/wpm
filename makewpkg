@@ -1,43 +1,34 @@
 #!/bin/bash
 # Copyright: Isaac David Orozco Delgado (c) 2024
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-ERROR(){
-	echo -e "\e[0;31mERROR: \e[1;37m$1,\e[0;31m Aborting...\e[0m"
-	exit $2
-}
-WARN(){
-	echo -e "\e[1;33mWARN: \e[0;37m$1\e[0m"
-}
 cmdChk() {
 	if ! type "$1" > /dev/null 2>&1; then
-		ERROR "$1 not found" 2
+		echo -e "\e[0;31mERROR: \e[1;37m$1 not found,\e[0;31m Aborting...\e[0m"
+		exit 2
 	fi
 }
 
 NAME="Make Wah-Package"
-VER="Alpha-2.0"
-URL="https://github.com/RedWared/wpm/tree/makewpkg"
-AUTHOR="Isaac David Orozco Delgado (Reisy RedPanda)"
-EMAIL="opensrcrdp@gmail.com"
-
 cmdChk dirname
 
-if [ -f "${WAHROOT}/usr/lib/makewpkg/config.wah" ]; then
-	CFG="${WAHROOT}/usr/lib/makewpkg"
+if [ -f "${WAHROOT}/usr/lib/makewpkg/core.wah" ]; then
+	CORE="${WAHROOT}/usr/lib/makewpkg"
 else
-	if [ -f "${HOME}/.local/usr/lib/makewpkg/config.wah" ]; then
-		CFG="${HOME}/.local/usr/lib/makewpkg"
+	if [ -f "${HOME}/.local/usr/lib/makewpkg/core.wah" ]; then
+		CORE="${HOME}/.local/usr/lib/makewpkg"
 	else
-		if [ -f "$(dirname $0)/funcs/config.wah" ]; then
-			CFG="$(dirname $0)/funcs"
+		if [ -f "$(dirname $0)/funcs/core.wah" ]; then
+			CORE="$(dirname $0)/funcs"
+			echo "WARN: Working on local directory core mode."
 		else
-			ERROR "$NAME configuration script not found" 1
+			echo "ERROR: $NAME core script not found"
+			exit 1
 		fi
 	fi
 fi
-source "${CFG}/config.wah"
+source "${CORE}/core.wah"
 
 if [ -f "${WAHROOT}/usr/lib/makewpkg/wahmain.wah" ]; then
 	SRC="${WAHROOT}/usr/lib/makewpkg"
@@ -47,7 +38,7 @@ else
 	else
 		if [ -f "$(dirname $0)/funcs/wahmain.wah" ]; then
 			SRC="$(dirname $0)/funcs"
-			WARN "Working on local directory mode."
+			WARN "Working on local directory main mode."
 		else
 			ERROR "$NAME main script not found" 1
 		fi
