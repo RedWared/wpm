@@ -5,7 +5,6 @@ A tool for build packages for Wah Package-Manager inspired on makepkg from arch.
 * bash
 * dirname (coreutils)
 * mv (coreutils)
-* touch (coreutils)
 * gzip (for compression and decompression)
 * xz (for decompression, optional)
 * zstd (for decompression, optional)
