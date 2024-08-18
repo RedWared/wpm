@@ -20,6 +20,7 @@ sudo pacman -S bash coreutils gzip xz zstd
 | 1		| One or more Make Wah-Package scripts mising.	|
 | 2		| Dependencie command not found.		|
 | 3		| Compression format not supported.		|
+| 4		| Uncompatible repo or package.			|
 
 ## License
 Make Wah-Package is licensed under the GPL version 3 License or later- see the [LICENSE](LICENSE) file for details.<br>
