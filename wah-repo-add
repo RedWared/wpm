@@ -79,6 +79,16 @@ wah-repo(){
 
 	echo "ARCH:$arch" >> "$1"
 
+	printf 'LICENSES:' >> "$1"
+	for li in ${license[@]}; do
+		if [ "$li" = "${license[0]}" ]; then
+			printf "$li" >> "$1"
+		else
+			printf ",$li" >> "$1"
+		fi
+	done
+	echo >> "$1"
+
 	if ! [ -z "$localdesc" ]; then
 		echo "DESC:$localdesc" >> "$1"
 	fi
