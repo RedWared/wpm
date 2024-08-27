@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 echo -e "\e[0;33m$NAME\e[0m"
 
-LCMD=("--version")
-SCMD=("-v")
+LCMDs=('version' 'help')
+SCMDs=('-v')
 
 wahmain(){
 	return 0
