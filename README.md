@@ -1,4 +1,11 @@
 # Wah Package-Manager
+> Dependencies:
+* glibc
+* gcc libs
+
+> Dependencies for compilation:
+* GCC and GCC libs
+* glibc
 
 ## Mirrors of this repo
 [GitHub](https://github.com/RedWared/wpm)
